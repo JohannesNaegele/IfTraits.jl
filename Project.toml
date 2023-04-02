@@ -1,0 +1,4 @@
+name = "IfTraits"
+uuid = "7a6924a7-8ee3-403d-a531-72325acf0e39"
+authors = ["Johannes Nägele <johannes-naegele@web.de>"]
+version = "0.1.0"
