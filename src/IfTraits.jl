@@ -1,6 +1,6 @@
 module IfTraits
 
-export Trait, @traitdef, @traitrm, @traitimpl, @iftraits
+export Trait,  @traitdef, @traitrm, @traitimpl, @iftraits
 
 include("Helpers.jl")
 
@@ -15,7 +15,7 @@ macro traitdef(expr)
         push!(traits_collection, symb)
         push!(result.args, :(struct $(symb) <: Trait end))
     end
-    add_default(symb) = push!(result.args, :(trait{$(symb)}(x) = false))
+    add_default(symb) = push!(result.args, :(IfTraits.trait{$(symb)}(x) = false))
     if expr isa Symbol
         add_symbol(expr)
         add_default(expr)
@@ -46,9 +46,8 @@ macro traitimpl(expr)
     result = quote end
     @assert (expr.head == :call)
     trait = expr.args[1]
-    push!(result.args, :(trait{$(trait)}(x) = false))
     for arg in expr.args[2:end]
-        push!(result.args, :(trait{$(trait)}(::$(arg)) = true))
+        push!(result.args, :(IfTraits.trait{$(trait)}(::$(arg)) = true))
         # push!(result.args, :(trait{$(trait)}(::Type{<:$(arg)}) = true))
     end
     esc(result)
@@ -61,7 +60,7 @@ function rewrite_traits!(expr)
         if (expr.head == :call) && (func_name = expr.args[func_name_index]; func_name in traits_collection)
             old_args = deepcopy(expr.args[func_name_index+1:end])
             expr.head = :block
-            expr.args = [:(trait{$(func_name)}($(old_args...)))] # isa Type(<:$(func_name)())
+            expr.args = [:(IfTraits.trait{$(func_name)}($(old_args...)))] # isa Type(<:$(func_name)())
         end
         for arg in expr.args
             rewrite_traits!(arg)
