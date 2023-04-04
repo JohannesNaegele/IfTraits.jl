@@ -1,6 +1,6 @@
 # IfTraits.jl
 
-This package provides convenience macros for traits (similar to and inspired by [SimpleTraits.jl](https://github.com/mauro3/SimpleTraits.jl)). However, function behavior depending on traits can now be specified via intuitive `if`/`else` syntax using `@iftraits`. 
+This lightweight package provides convenience macros for traits (similar to and inspired by [SimpleTraits.jl](https://github.com/mauro3/SimpleTraits.jl)). However, function behavior depending on traits can now be specified via intuitive `if`/`else` syntax using `@iftraits`.
 
 ## Disclaimer
 
@@ -9,13 +9,13 @@ This package is in a very early stage of development and thus not ready for prod
 ## Basic usage
 
 Consider the example 
-```
+```julia
 @traitdef IsNice
 @traitimpl IsNice(Int)
 @iftraits f(x) = IsNice(x) ? "Very nice!" : "Not so nice!"
 ```
 which (unsurprisingly) leads to 
-```
+```jlcon
 @test f(5) == "Very nice!"
 @test f(5.0) == "Not so nice!"
 ```
@@ -39,7 +39,7 @@ struct Composer<:Musician end
 @traitimpl CanCompose(Composer, ChartsSinger)
 ```
 In this setting we ask whether it makes sense to have `a` compose something for `b`.
-```
+```julia
 @iftraits function compose_for(a, b)
     if CanCompose(a)
         if CanSing(b)
@@ -71,14 +71,14 @@ The generated functions are:
 ...
 ```
 
-More examples can be found [here](./src/Examples.jl).
+More examples can be found [here](./src/examples).
 
 ## Discussion
 
 ### Trait hierarchy
 
 This approach has the (unintended but not unwelcome) side effect of easily detecting and eliminating function disambiguities. Since traits are not allowed to (1) be nested in itself or (2) change their hierarchy within a function, this generates a error message:
-```
+```julia
 @iftraits function problem(a)
     if CanX(a)
         if CanY(a)
@@ -95,19 +95,52 @@ end
 Moreover, we don't need to define a general hierarchy between traits, since this is only necessary within and can be distinct for each function.
 
 ### Multitype traits
-My current understanding is that special traits of the form `BelongTogether(X, Y)` are just a natural extension. Let's say we have a function
+My current understanding is that special traits of the form `BelongTogether(X, Y)` are just a (more or less) natural extension. Let's say we have a function `ship` which we would like to formulate using traits.
+```julia
+struct Romeo end; struct Juliet end
+belong_together(a, b) = false
+belong_together(a::Romeo, b::Juliet) = true
+belong_together(a::Juliet, b::Romeo) = true
+ship(a, b) = belong_together(a, b) ? "go marry" : "nothing holds forever"
 ```
-ship(a, b) = BelongTogether(a, b) ? "go marry" : "nothing holds forever"
-```
-which should differentiate at compile time.
 
-Now we can use the following trick: We define a new trait `@traitdef BelongTogether` with `@traitimpl BelongTogether(Bool)` and for types `X` and `Y` we can just define a new function `belong_together(a::X, b::Y) = true` and default behavior `belong_together(a, b) = nothing`.
+Now we can use the following trick:
+```julia
+# Multi is just a dummy trait, we could instead use an arbitrary type
+@traitdef Multi, BelongTogether
+@traitimpl BelongTogether(Multi)
+# assume types X and X
+function ⊕(a, b) end
+⊕(::Romeo, ::Juliet) = Multi(); ⊕(::Juliet, ::Romeo) = Multi()
+```
 
 Thus, we can now write
+```julia
+ship(a, b) = @iftraits BelongTogether(⊕(a, b)) ? "go marry" : "nothing holds forever"
 ```
-ship(a, b) = @iftraits BelongTogether(belong_together(a, b)) ? "go marry" : "nothing holds forever"
-```
-I am not shure whether this pattern should maybe made easier through some new feature.
+Note however that we need a different function `⊕` for every multi-type trait. This pattern could of course be simplified by some new feature (something along defining `struct ⊕{T} end` and extending `@traitdef`/`@traitimpl` macros.).
+
+### Other
+Obvious that we overwrite:
+@traitfn fn(x::X) where {X<:AbstractFloat;  Tr{X}} = 2
+@traitfn fn(x::X) where {X<:AbstractFloat; Tr2{X}} = 4
 
 ## Credit
-Credit goes of course to Tim Holy (see [here](https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633) the THTT) and Mauro Werder.
+Credit goes of course to Tim Holy (see [here](https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633) the THTT) and Mauro Werder. If you feel like the credit for your contribution is missing, don't hesitate to contact me.
+
+## Other trait packages
+If this package does not fit your use case, you might want to have a look at these packages:
+- [SimpleTraits.jl](https://github.com/mauro3/SimpleTraits.jl) (and the deprecated [Traits.jl](https://github.com/mauro3/Traits.jl#dispatch-on-traits))
+- [WhereTraits.jl](https://github.com/jolin-io/WhereTraits.jl)
+- [CanonicalTraits.jl](https://github.com/thautwarm/CanonicalTraits.jl)
+- [BinaryTraits.jl](https://github.com/tk3369/BinaryTraits.jl)
+
+## Other resources
+
+Here some other helpful resources:
+
+- [Official documentation regarding traits](https://docs.julialang.org/en/v1/manual/methods/#Trait-based-dispatch-1), it's imho kinda difficult to understand
+- Tom Kwong's book [Hands-on design patterns and best practices with Julia: proven solutions to common problems in software design for Julia 1.x](https://www.packtpub.com/product/hands-on-design-patterns-and-best-practices-with-julia/9781838648817)
+- Christopher Rackauckas' blog post [Type-Dispatch Design: Post Object-Oriented Programming for Julia](http://www.stochasticlifestyle.com/type-dispatch-design-post-object-oriented-programming-julia/)
+- Frames Catherine White' blog post [The Emergent Features of JuliaLang: Part II - Traits](https://invenia.github.io/blog/2019/11/06/julialang-features-part-2/)
+- GitHub repositories [Object Orientation and Polymorphism in Julia](https://github.com/ninjaaron/oo-and-polymorphism-in-julia) and [Dispatching Design Patterns](https://github.com/ninjaaron/dispatching-design-patterns) from Aaron Christianson
