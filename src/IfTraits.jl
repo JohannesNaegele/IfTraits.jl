@@ -1,26 +1,45 @@
 module IfTraits
 
-export Trait, @traitdef, @traitimpl, @iftraits
+export Trait, @traitdef, @traitrm, @traitimpl, @iftraits
 
 include("Helpers.jl")
 
 abstract type Trait end
 struct trait{T} end
 
+const traits_collection = Set([])
+
 macro traitdef(expr)
     result = quote end
     function add_symbol(symb)
         push!(traits_collection, symb)
-        push!(result.args, :(struct $(esc(symb)) <: Trait end))
+        push!(result.args, :(struct $(symb) <: Trait end))
     end
+    add_default(symb) = push!(result.args, :(trait{$(symb)}(x) = false))
     if expr isa Symbol
         add_symbol(expr)
+        add_default(expr)
     else
         for trait in expr.args
             add_symbol(trait)
+            add_default(trait)
         end
     end
-    result
+    esc(result)
+end
+
+macro traitrm(expr)
+    function remove_symbol(symb)
+        pop!(traits_collection, symb)
+    end
+    if expr isa Symbol
+        remove_symbol(expr)
+        remove_symbol
+        for trait in expr.args
+            remove_symbol(trait)
+        end
+    end
+    esc(result)
 end
 
 macro traitimpl(expr)
@@ -30,12 +49,10 @@ macro traitimpl(expr)
     push!(result.args, :(trait{$(trait)}(x) = false))
     for arg in expr.args[2:end]
         push!(result.args, :(trait{$(trait)}(::$(arg)) = true))
+        # push!(result.args, :(trait{$(trait)}(::Type{<:$(arg)}) = true))
     end
     esc(result)
 end
-
-const traits_collection = Set([])
-push!(traits_collection, :IsNice)
 
 function rewrite_traits!(expr)
     if expr isa Expr
