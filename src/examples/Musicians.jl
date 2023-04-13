@@ -1,8 +1,8 @@
 abstract type Musician end
-struct OperaSinger<:Musician end
-struct ChartsSinger<:Musician end
-struct BadSinger<:Musician end
-struct Composer<:Musician end
+struct OperaSinger <: Musician end
+struct ChartsSinger <: Musician end
+struct BadSinger <: Musician end
+struct Composer <: Musician end
 
 @traitdef CanSing, CanCompose
 

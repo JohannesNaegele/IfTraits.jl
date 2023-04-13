@@ -1,6 +1,6 @@
 module IfTraits
 
-export Trait,  @traitdef, @traitrm, @traitimpl, @iftraits
+export Trait, @traitdef, @traitrm, @traitimpl, @iftraits
 
 include("Helpers.jl")
 
@@ -56,8 +56,9 @@ end
 function rewrite_traits!(expr)
     if expr isa Expr
         # maybe considering LineNumberNodes is unnecessary here
-        func_name_index = findfirst(x -> !(x isa LineNumberNode), expr.args);
-        if (expr.head == :call) && (func_name = expr.args[func_name_index]; func_name in traits_collection)
+        func_name_index = findfirst(x -> !(x isa LineNumberNode), expr.args)
+        if (expr.head == :call) &&
+           (func_name = expr.args[func_name_index]; func_name in traits_collection)
             old_args = deepcopy(expr.args[func_name_index+1:end])
             expr.head = :block
             expr.args = [:(IfTraits.trait{$(func_name)}($(old_args...)))] # isa Type(<:$(func_name)())

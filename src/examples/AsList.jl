@@ -3,9 +3,9 @@
 @traitdef IsList
 @traitimpl IsList(Type{<:AbstractVector}, Type{<:Tuple})
 
-@iftraits aslist(x::T) where T = IsList(T) ? x : [x]
+@iftraits aslist(x::T) where {T} = IsList(T) ? x : [x]
 
 aslist(1)
-aslist([1,2,3])
+aslist([1, 2, 3])
 aslist([1])
 aslist((1, 2, 3))
