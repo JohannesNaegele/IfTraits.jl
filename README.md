@@ -20,6 +20,11 @@ which (unsurprisingly) leads to
 @test f(5.0) == "Not so nice!"
 ```
 
+## Implementation
+
+Internally, we just replace  `IsNice(x)` by a function call `trait{IsNice}(x)` and return `true` in the case of a fulfilled trait and `false` in the case of a missing trait. 
+Because the compiler is smart, the return value of these functions gets detected at compile time and the trait dispatch does not have to be done at runtime.
+
 ## Main functionality
 
 From this example the advantage over other packages is not apparent. The real power instead lies in the simplicity of defining functions which *depend on multiple types*.
@@ -137,7 +142,7 @@ If this package does not fit your use case, you might want to have a look at the
 
 ## Other resources
 
-Here some other helpful resources:
+Here are some other helpful resources:
 
 - [Official documentation regarding traits](https://docs.julialang.org/en/v1/manual/methods/#Trait-based-dispatch-1), it's imho kinda difficult to understand
 - Tom Kwong's book [Hands-on design patterns and best practices with Julia: proven solutions to common problems in software design for Julia 1.x](https://www.packtpub.com/product/hands-on-design-patterns-and-best-practices-with-julia/9781838648817)
