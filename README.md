@@ -1,3 +1,5 @@
+[![CI](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml)
+
 # IfTraits.jl
 
 This lightweight package provides convenience macros for traits (similar to and inspired by [SimpleTraits.jl](https://github.com/mauro3/SimpleTraits.jl)). However, function behavior depending on traits can now be specified via intuitive `if`/`else` syntax using `@iftraits`.
