@@ -9,7 +9,30 @@ struct Composer <: Musician end
 @traitimpl CanSing(OperaSinger, ChartsSinger)
 @traitimpl CanCompose(Composer, ChartsSinger)
 
-function test()
+@iftraits function compose_for(a, b)
+    if CanCompose(a)
+        if CanSing(b)
+            println("works")
+        else
+            println("compose for someone else")
+        end
+    elseif CanCompose(b)
+        if CanSing(b)
+            println("compose for yourself and save the money")
+        else
+            println("maybe you should change your job?")
+        end
+    else
+        if CanSing(b)
+            println("play Puccini then!")
+        else
+            println("wtf is this bullshit")
+        end
+    end
+end
+
+# prints out all combinations
+function all_pairs()
     types = [Composer(), OperaSinger(), ChartsSinger(), BadSinger()]
     count = 1
     for i in types
@@ -22,6 +45,4 @@ function test()
     end
 end
 
-test()
-
-@code_native compose_for(Composer(), OperaSinger())
+all_pairs()
