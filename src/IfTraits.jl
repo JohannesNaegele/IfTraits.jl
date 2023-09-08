@@ -1,6 +1,6 @@
 module IfTraits
 
-export Trait, @traitdef, @traitrm, @traitimpl, @iftraits
+export Trait, @traitdef, @traitimpl, @iftraits
 
 include("Helpers.jl")
 
