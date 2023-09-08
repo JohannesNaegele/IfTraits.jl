@@ -6,7 +6,7 @@ This lightweight package provides convenience macros for traits (similar to and 
 
 ## Disclaimer
 
-This package is in a very early stage of development and thus not ready for production yet. Feel free to suggest features, improvements and (of course) bugfixes!
+This package is in an early stage of development; whether it's concept really is useful is not yet clear to me. Feel free to suggest features, improvements and (of course) bugfixes!
 
 ## Basic usage
 
@@ -78,28 +78,9 @@ The generated functions are:
 ...
 ```
 
-More examples can be found [here](./src/examples).
+More examples can be found [here](./examples).
 
 ## Discussion
-
-### Trait hierarchy
-
-This approach has the (unintended but not unwelcome) side effect of easily detecting and eliminating function disambiguities. Since traits are not allowed to (1) be nested in itself or (2) change their hierarchy within a function, this generates a error message:
-```julia
-@iftraits function problem(a)
-    if CanX(a)
-        if CanY(a)
-            nothing
-        end
-    end
-    if CanY(a)
-        if CanX(a)
-            nothing
-        end
-    end
-end
-```
-Moreover, we don't need to define a general hierarchy between traits, since this is only necessary within and can be distinct for each function.
 
 ### Multitype traits
 My current understanding is that special traits of the form `BelongTogether(X, Y)` are just a (more or less) natural extension. Let's say we have a function `ship` which we would like to formulate using traits.
