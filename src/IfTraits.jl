@@ -28,19 +28,19 @@ macro traitdef(expr)
     esc(result)
 end
 
-macro traitrm(expr)
-    function remove_symbol(symb)
-        pop!(traits_collection, symb)
-    end
-    if expr isa Symbol
-        remove_symbol(expr)
-        remove_symbol
-        for trait in expr.args
-            remove_symbol(trait)
-        end
-    end
-    esc(result)
-end
+# TODO:
+# macro traitrm(expr)
+#     function remove_symbol(symb)
+#         pop!(traits_collection, symb)
+#     end
+#     if expr isa Symbol
+#         remove_symbol(expr)
+#     else
+#         for trait in expr.args
+#             remove_symbol(trait)
+#         end
+#     end
+# end
 
 macro traitimpl(expr)
     result = quote end
@@ -76,3 +76,5 @@ macro iftraits(expr)
 end
 
 end # module IfTraits
+
+# TODO: use Meta.isexpr
