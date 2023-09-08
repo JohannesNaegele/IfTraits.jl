@@ -8,7 +8,7 @@
 @traitimpl IsNormable(Type{<:Complex})
 
 using LinearAlgebra
-@iftraits function bounds(xs::AbstractVector{T}) where T
+@iftraits function bounds(xs::AbstractVector{T}) where {T}
     if IsCategorical(T)
         return unique(xs)
     elseif IsNormable(T)
@@ -21,4 +21,4 @@ end
 bounds([false, false, true])
 bounds([false, false, false])
 bounds([1, 2, 3, 2])
-bounds([1+1im, -2+4im, 0-2im])
+bounds([1 + 1im, -2 + 4im, 0 - 2im])

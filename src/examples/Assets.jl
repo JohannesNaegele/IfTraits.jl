@@ -12,28 +12,27 @@ abstract type FixedIncome <: Investment end
 abstract type Equity <: Investment end
 
 struct Residence <: House
-   location
+    location::Any
 end
 
 struct Stock <: Equity
-    symbol
-    name
+    symbol::Any
+    name::Any
 end
 
 struct TreasuryBill <: FixedIncome
-    cusip
+    cusip::Any
 end
 
 struct Money <: Cash
-    currency
-    amount
+    currency::Any
+    amount::Any
 end
 
 # abstract type LiquidityStyle end
 # struct IsLiquid <: LiquidityStyle end
 # struct IsIlliquid <: LiquidityStyle end
 
-@iftraits marketprice(x) = IsLiquid(x) ? 
-    error("Please implement pricing function for", typeof(x)) :
+@iftraits marketprice(x) =
+    IsLiquid(x) ? error("Please implement pricing function for", typeof(x)) :
     error("Price for illiquid asset $x is not available.")
-
