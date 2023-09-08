@@ -1,4 +1,4 @@
-[![CI](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml)
+[![CI](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JohannesNaegele/IfTraits.jl/actions/workflows/CI.yml) [![codecov](https://codecov.io/gh/JohannesNaegele/IfTraits.jl/graph/badge.svg?token=RQIJHHG9TP)](https://codecov.io/gh/JohannesNaegele/IfTraits.jl)
 
 # IfTraits.jl
 
