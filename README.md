@@ -108,11 +108,6 @@ ship(a, b) = @iftraits BelongTogether(⊕(a, b)) ? "go marry" : "nothing holds f
 ```
 Note however that we need a different function `⊕` for every multi-type trait. This pattern could of course be simplified by some new feature (something along defining `struct ⊕{T} end` and extending `@traitdef`/`@traitimpl` macros).
 
-### Other
-Obvious that we overwrite:
-@traitfn fn(x::X) where {X<:AbstractFloat;  Tr{X}} = 2
-@traitfn fn(x::X) where {X<:AbstractFloat; Tr2{X}} = 4
-
 ## Credit
 Credit goes of course to Tim Holy (see [here](https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633) the THTT) and Mauro Werder. If you feel like the credit for your contribution is missing, don't hesitate to contact me.
 
