@@ -18,8 +18,11 @@ Consider the example
 ```
 which (unsurprisingly) leads to 
 ```jlcon
-@test f(5) == "Very nice!"
-@test f(5.0) == "Not so nice!"
+julia> f(5)
+"Very nice!"
+
+julia> f(5.0)
+"Not so nice!"
 ```
 
 ## Implementation
@@ -33,7 +36,7 @@ From this example the advantage over other packages is not apparent. The real po
 As far as I know, usually the approach to this problem is either to use [combined traits](https://github.com/mauro3/SimpleTraits.jl/issues/71) (which in my opinion is not very intuitive) or to define a bunch of [different functions](https://github.com/mauro3/SimpleTraits.jl/pull/2) depending on several input traits (which imo is kinda messy).
 
 In our case, this can be solved with generic syntax:
-```
+```julia
 # dummy example
 abstract type Musician end
 struct OperaSinger<:Musician end
@@ -70,12 +73,9 @@ In this setting we ask whether it makes sense to have `a` compose something for 
 end
 ```
 We get the intended behavior:
-```
-...
-```
-The generated functions are:
-```
-...
+```jlcon
+julia> compose_for(OperaSinger(), OperaSinger())
+play Puccini then!
 ```
 
 More examples can be found [here](./examples).
@@ -106,7 +106,7 @@ Thus, we can now write
 ```julia
 ship(a, b) = @iftraits BelongTogether(⊕(a, b)) ? "go marry" : "nothing holds forever"
 ```
-Note however that we need a different function `⊕` for every multi-type trait. This pattern could of course be simplified by some new feature (something along defining `struct ⊕{T} end` and extending `@traitdef`/`@traitimpl` macros.).
+Note however that we need a different function `⊕` for every multi-type trait. This pattern could of course be simplified by some new feature (something along defining `struct ⊕{T} end` and extending `@traitdef`/`@traitimpl` macros).
 
 ### Other
 Obvious that we overwrite:
