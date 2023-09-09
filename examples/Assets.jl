@@ -29,10 +29,12 @@ struct Money <: Cash
     amount::Any
 end
 
-# abstract type LiquidityStyle end
-# struct IsLiquid <: LiquidityStyle end
-# struct IsIlliquid <: LiquidityStyle end
+@traitdef IsLiquid
+@traitimpl IsLiquid(Type{<:Cash}, Type{<:Investment})
 
-@iftraits marketprice(x) =
-    IsLiquid(x) ? error("Please implement pricing function for", typeof(x)) :
+@iftraits marketprice(x::T) where T =
+    IsLiquid(T) ? error("Please implement pricing function for", typeof(x)) :
     error("Price for illiquid asset $x is not available.")
+
+marketprice(Residence("Narnia"))
+marketprice(Money("Euro", "1"))
