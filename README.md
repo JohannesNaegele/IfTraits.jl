@@ -2,11 +2,22 @@
 
 # IfTraits.jl
 
+> [!WARNING]
+> **This package is deprecated and no longer maintained.** It remains in the General
+> registry (and installable) so existing `Manifest.toml`s keep resolving, but no further
+> development is planned. For trait support in Julia, prefer one of the alternatives listed
+> under [Other trait packages](#other-trait-packages) below — or, in many cases, plain
+> boolean predicate functions with `if`/`else`, which give the same compile-time dispatch
+> with no dependency.
+
 This lightweight package provides convenience macros for traits (similar to and inspired by [SimpleTraits.jl](https://github.com/mauro3/SimpleTraits.jl)). However, function behavior depending on traits can now be specified via intuitive `if`/`else` syntax using `@iftraits`.
 
 ## Disclaimer
 
-This package is in an early stage of development; whether it's concept really is useful is not yet clear to me. Feel free to suggest features, improvements and (of course) bugfixes!
+**This package is retired/unmaintained** (see the warning at the top). It was an experiment in
+expressing trait logic as in-body `if`/`else` rather than via dispatch. In practice this is largely
+redundant with plain predicate functions, and it trades away the open extensibility that makes
+Julia's multiple dispatch valuable, so it is no longer being developed.
 
 ## Basic usage
 

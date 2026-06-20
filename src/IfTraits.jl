@@ -2,6 +2,12 @@ module IfTraits
 
 export Trait, @traitdef, @traitimpl, @iftraits
 
+# IfTraits.jl is deprecated and unmaintained. Warn once, at precompile time, so the
+# notice surfaces on install/first load rather than on every call. See the README.
+if ccall(:jl_generating_output, Cint, ()) == 1
+    @warn "IfTraits.jl is deprecated and unmaintained. See the README for alternatives (e.g. SimpleTraits.jl, WhereTraits.jl, or plain predicate functions)."
+end
+
 include("Helpers.jl")
 
 abstract type Trait end
